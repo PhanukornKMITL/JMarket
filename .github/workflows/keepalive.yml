@@ -1,0 +1,28 @@
+name: keep-alive
+
+# กัน Supabase free-tier หยุดโปรเจคเมื่อไม่มี request 7 วัน
+# ยิง /api/health ทุก 3 วัน (และกดรันเองได้จากแท็บ Actions)
+
+on:
+  schedule:
+    - cron: "0 3 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          if [ -z "${{ vars.SITE_URL }}" ]; then
+            echo "ยังไม่ได้ตั้งค่า repo variable SITE_URL — ข้าม"
+            exit 0
+          fi
+          echo "Pinging ${{ vars.SITE_URL }}/api/health"
+          code=$(curl -s -o /tmp/out.json -w "%{http_code}" "${{ vars.SITE_URL }}/api/health")
+          cat /tmp/out.json
+          echo ""
+          if [ "$code" != "200" ]; then
+            echo "health check ล้มเหลว (HTTP $code)"
+            exit 1
+          fi

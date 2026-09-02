@@ -1,0 +1,387 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import Link from "next/link";
+
+import { FOOD_TAGS, PRICE_RANGES } from "@/lib/constants";
+import type { RestaurantInput } from "@/lib/restaurant-input";
+import { slugify } from "@/lib/utils";
+import { saveRestaurant } from "../actions";
+import { ContactChannelsEditor } from "./ContactChannelsEditor";
+import { ImageField } from "./ImageField";
+import { ImageListField } from "./ImageListField";
+import { MenuItemsEditor } from "./MenuItemsEditor";
+
+function Section({
+  title,
+  desc,
+  children,
+}: {
+  title: string;
+  desc?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-card border border-brand-100 bg-surface p-5">
+      <h2 className="text-lg font-bold text-ink">{title}</h2>
+      {desc ? <p className="mb-3 mt-0.5 text-sm text-muted">{desc}</p> : <div className="mb-3" />}
+      {children}
+    </section>
+  );
+}
+
+const inputCls =
+  "w-full rounded-lg border border-brand-200 bg-surface px-3 py-2 text-sm outline-none focus:border-brand-400";
+
+export function RestaurantForm({
+  mode,
+  id,
+  initial,
+}: {
+  mode: "create" | "edit";
+  id: string | null;
+  initial: RestaurantInput;
+}) {
+  const [form, setForm] = useState<RestaurantInput>(initial);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  function set<K extends keyof RestaurantInput>(key: K, value: RestaurantInput[K]) {
+    setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function toggleTag(tag: string) {
+    set(
+      "foodTags",
+      form.foodTags.includes(tag)
+        ? form.foodTags.filter((t) => t !== tag)
+        : [...form.foodTags, tag],
+    );
+  }
+
+  function submit() {
+    setError(null);
+    if (!form.name.trim()) {
+      setError("กรอกชื่อร้าน");
+      return;
+    }
+    const payload: RestaurantInput = {
+      ...form,
+      slug: form.slug.trim() || slugify(form.name),
+      phones: form.phones.map((p) => p.trim()).filter(Boolean),
+    };
+    startTransition(async () => {
+      const res = await saveRestaurant(id, payload);
+      if (res && !res.ok) setError(res.error);
+    });
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-extrabold text-ink">
+          {mode === "create" ? "เพิ่มร้านใหม่" : "แก้ไขร้าน"}
+        </h1>
+        <Link href="/admin" className="text-sm text-muted hover:text-brand-700">
+          ← กลับ
+        </Link>
+      </div>
+
+      {/* ข้อมูลหลัก */}
+      <Section title="ข้อมูลหลัก">
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              ชื่อร้าน *
+            </label>
+            <input
+              value={form.name}
+              onChange={(e) => {
+                const name = e.target.value;
+                setForm((f) => ({
+                  ...f,
+                  name,
+                  slug:
+                    !f.slug || f.slug === slugify(f.name) ? slugify(name) : f.slug,
+                }));
+              }}
+              className={inputCls}
+              placeholder="เช่น ครัวเจบ้านสวน"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              slug (ใช้ทำ URL: /r/…)
+            </label>
+            <div className="flex gap-2">
+              <input
+                value={form.slug}
+                onChange={(e) => set("slug", e.target.value)}
+                className={inputCls}
+                placeholder="jae-baan-suan"
+              />
+              <button
+                type="button"
+                onClick={() => set("slug", slugify(form.name))}
+                className="shrink-0 rounded-lg border border-brand-200 px-3 text-xs text-brand-700 hover:bg-brand-50"
+              >
+                สร้างจากชื่อ
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              คำโปรย (1 บรรทัด)
+            </label>
+            <input
+              value={form.tagline}
+              onChange={(e) => set("tagline", e.target.value)}
+              className={inputCls}
+              placeholder="อาหารเจโฮมเมด วัตถุดิบสดใหม่ทุกวัน"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              รายละเอียดร้าน
+            </label>
+            <textarea
+              value={form.description}
+              onChange={(e) => set("description", e.target.value)}
+              rows={4}
+              className={inputCls}
+              placeholder="เล่าเรื่องร้าน จุดเด่น เมนูซิกเนเจอร์ ฯลฯ"
+            />
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-ink">
+                ช่วงราคา
+              </label>
+              <select
+                value={form.priceRange}
+                onChange={(e) => set("priceRange", e.target.value)}
+                className={inputCls}
+              >
+                <option value="">— ไม่ระบุ —</option>
+                {PRICE_RANGES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-ink">
+                ลำดับการเรียง (เลขน้อย = ขึ้นก่อน)
+              </label>
+              <input
+                type="number"
+                value={form.sortOrder}
+                onChange={(e) => set("sortOrder", Number(e.target.value) || 0)}
+                className={inputCls}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              แท็กประเภทอาหาร
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {FOOD_TAGS.map((tag) => {
+                const active = form.foodTags.includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className={
+                      active
+                        ? "rounded-full border border-brand-600 bg-brand-600 px-3 py-1.5 text-sm text-white"
+                        : "rounded-full border border-brand-200 px-3 py-1.5 text-sm text-muted hover:border-brand-400"
+                    }
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-1">
+            <label className="flex items-center gap-2 text-sm text-ink">
+              <span>สถานะ:</span>
+              <select
+                value={form.status}
+                onChange={(e) =>
+                  set("status", e.target.value as RestaurantInput["status"])
+                }
+                className="rounded-lg border border-brand-200 bg-surface px-3 py-1.5 text-sm"
+              >
+                <option value="draft">ร่าง (ยังไม่แสดงบนเว็บ)</option>
+                <option value="published">เผยแพร่</option>
+              </select>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-ink">
+              <input
+                type="checkbox"
+                checked={form.featured}
+                onChange={(e) => set("featured", e.target.checked)}
+              />
+              ปักหมุด (ขึ้นหน้าแรก)
+            </label>
+          </div>
+        </div>
+      </Section>
+
+      {/* รูป */}
+      <Section title="รูปภาพ">
+        <div className="space-y-4">
+          <ImageField
+            label="รูปหน้าปก"
+            value={form.coverImage}
+            prefix="cover"
+            onChange={(url) => set("coverImage", url)}
+          />
+          <ImageListField
+            label="แกลเลอรีบรรยากาศร้าน"
+            values={form.gallery}
+            prefix="gallery"
+            onChange={(urls) => set("gallery", urls)}
+          />
+          <ImageListField
+            label="รูปบอร์ดเมนู / ใบราคา"
+            values={form.menuBoardImages}
+            prefix="menu-board"
+            onChange={(urls) => set("menuBoardImages", urls)}
+          />
+        </div>
+      </Section>
+
+      {/* ทำเล */}
+      <Section title="ทำเล / ที่อยู่" desc="ไม่บังคับ — ใส่เท่าที่มี">
+        <div className="space-y-3">
+          <input
+            value={form.provinceText}
+            onChange={(e) => set("provinceText", e.target.value)}
+            className={inputCls}
+            placeholder="จังหวัด เช่น เชียงใหม่"
+          />
+          <textarea
+            value={form.addressText}
+            onChange={(e) => set("addressText", e.target.value)}
+            rows={2}
+            className={inputCls}
+            placeholder="ที่อยู่เต็ม"
+          />
+          <input
+            value={form.mapUrl}
+            onChange={(e) => set("mapUrl", e.target.value)}
+            className={inputCls}
+            placeholder="ลิงก์ Google Maps"
+          />
+        </div>
+      </Section>
+
+      {/* ติดต่อ */}
+      <Section
+        title="ช่องทางติดต่อ"
+        desc="หัวใจของหน้าร้าน — ใส่เบอร์โทรและช่องทางแชท"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              เบอร์โทร
+            </label>
+            <div className="space-y-2">
+              {form.phones.map((phone, i) => (
+                <div key={i} className="flex gap-2">
+                  <input
+                    value={phone}
+                    onChange={(e) =>
+                      set(
+                        "phones",
+                        form.phones.map((p, idx) =>
+                          idx === i ? e.target.value : p,
+                        ),
+                      )
+                    }
+                    className={inputCls}
+                    placeholder="08x-xxx-xxxx"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      set(
+                        "phones",
+                        form.phones.filter((_, idx) => idx !== i),
+                      )
+                    }
+                    className="shrink-0 rounded-lg border border-red-200 px-3 text-xs text-red-600 hover:bg-red-50"
+                  >
+                    ลบ
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => set("phones", [...form.phones, ""])}
+                className="rounded-lg border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-50"
+              >
+                + เพิ่มเบอร์
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-ink">
+              ช่องทางอื่น (LINE / Facebook / …)
+            </label>
+            <ContactChannelsEditor
+              channels={form.contactChannels}
+              onChange={(channels) => set("contactChannels", channels)}
+            />
+          </div>
+        </div>
+      </Section>
+
+      {/* เมนู */}
+      <Section
+        title="เมนู"
+        desc="ใส่รายการเมนู หรือจะข้ามไปแปะ ‘รูปบอร์ดเมนู’ ด้านบนก็ได้"
+      >
+        <MenuItemsEditor
+          items={form.menuItems}
+          onChange={(items) => set("menuItems", items)}
+        />
+      </Section>
+
+      {error ? (
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="sticky bottom-4 flex items-center gap-3 rounded-full border border-brand-100 bg-surface/95 p-2 shadow-lg backdrop-blur">
+        <button
+          type="button"
+          onClick={submit}
+          disabled={pending}
+          className="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+        >
+          {pending ? "กำลังบันทึก…" : "บันทึก"}
+        </button>
+        <Link
+          href="/admin"
+          className="rounded-full px-4 py-2.5 text-sm text-muted hover:text-brand-700"
+        >
+          ยกเลิก
+        </Link>
+      </div>
+    </div>
+  );
+}

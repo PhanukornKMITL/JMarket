@@ -1,0 +1,48 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * สร้าง slug จากชื่อร้าน — คงตัวอักษรไทย/อังกฤษ/ตัวเลขไว้ ตัดช่องว่างเป็น "-"
+ * ถ้าว่างเปล่า คืนค่า fallback แบบสุ่มสั้น ๆ
+ */
+export function slugify(input: string): string {
+  const s = input
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_/\\]+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return s || `ran-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/** ทำให้ค่า input (อาจเป็น undefined) เป็น array ของ string ที่ไม่ว่าง */
+export function toStringList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((v) => String(v).trim()).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(/[\n,]/)
+      .map((v) => v.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+/** เบอร์โทรสำหรับลิงก์ tel: (ตัดอักขระที่ไม่ใช่ตัวเลข/บวก) */
+export function telHref(phone: string): string {
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+}
+
+/** ทำให้ URL ปลอดภัยสำหรับ href — เติม https:// ให้ถ้าไม่มี scheme */
+export function externalHref(value: string): string {
+  const v = value.trim();
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^(mailto:|tel:)/i.test(v)) return v;
+  return `https://${v}`;
+}
