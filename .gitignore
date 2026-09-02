@@ -34,3 +34,8 @@ yarn-error.log*
 
 # drizzle
 /drizzle/meta/_journal.json.bak
+
+# env (เก็บเฉพาะ .env.example)
+.env*
+!.env.example
+
