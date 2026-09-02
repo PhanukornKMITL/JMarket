@@ -29,7 +29,7 @@ export const SITE_DESCRIPTION =
 
 export function siteUrl(path = ""): string {
   const base =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+    process.env.SITE_URL?.replace(/\/$/, "") ??
     "http://localhost:3000";
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }

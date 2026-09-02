@@ -90,7 +90,7 @@ npm run dev
 ## Deploy บน Vercel
 
 1. push repo นี้ขึ้น GitHub แล้ว import เข้า Vercel
-2. ใส่ Environment Variables ทั้งหมดจาก `.env` (ยกเว้นให้ตั้ง `NEXT_PUBLIC_SITE_URL`
+2. ใส่ Environment Variables ทั้งหมดจาก `.env` (ตั้ง `SITE_URL`
    เป็น URL จริงของ Vercel เช่น `https://jmarket-xxx.vercel.app`)
 3. Deploy — Vercel รัน `npm run build` ให้อัตโนมัติ
 4. รัน migration ครั้งแรกจากเครื่อง (ชี้ `DIRECT_URL` ไปที่ Supabase เดียวกัน):
