@@ -30,8 +30,8 @@ export default async function AdminHome() {
           ยังไม่มีร้าน — กด “เพิ่มร้าน” เพื่อเริ่ม
         </p>
       ) : (
-        <div className="overflow-hidden rounded-card border border-brand-100 bg-surface">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-card border border-brand-100 bg-surface">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="bg-brand-50 text-left text-xs uppercase text-muted">
               <tr>
                 <th className="px-4 py-3">ร้าน</th>
