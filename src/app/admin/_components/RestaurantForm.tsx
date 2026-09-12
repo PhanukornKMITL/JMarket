@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import { FOOD_TAGS, PRICE_RANGES } from "@/lib/constants";
 import type { RestaurantInput } from "@/lib/restaurant-input";
-import { slugify } from "@/lib/utils";
 import { saveRestaurant } from "../actions";
 import { ContactChannelsEditor } from "./ContactChannelsEditor";
 import { ImageField } from "./ImageField";
@@ -67,7 +66,6 @@ export function RestaurantForm({
     }
     const payload: RestaurantInput = {
       ...form,
-      slug: form.slug.trim() || slugify(form.name),
       phones: form.phones.map((p) => p.trim()).filter(Boolean),
     };
     startTransition(async () => {
@@ -96,39 +94,10 @@ export function RestaurantForm({
             </label>
             <input
               value={form.name}
-              onChange={(e) => {
-                const name = e.target.value;
-                setForm((f) => ({
-                  ...f,
-                  name,
-                  slug:
-                    !f.slug || f.slug === slugify(f.name) ? slugify(name) : f.slug,
-                }));
-              }}
+              onChange={(e) => set("name", e.target.value)}
               className={inputCls}
               placeholder="เช่น ครัวเจบ้านสวน"
             />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-ink">
-              slug (ใช้ทำ URL: /r/…)
-            </label>
-            <div className="flex gap-2">
-              <input
-                value={form.slug}
-                onChange={(e) => set("slug", e.target.value)}
-                className={inputCls}
-                placeholder="jae-baan-suan"
-              />
-              <button
-                type="button"
-                onClick={() => set("slug", slugify(form.name))}
-                className="shrink-0 rounded-lg border border-brand-200 px-3 text-xs text-brand-700 hover:bg-brand-50"
-              >
-                สร้างจากชื่อ
-              </button>
-            </div>
           </div>
 
           <div>

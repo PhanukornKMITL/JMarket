@@ -6,18 +6,12 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
- * สร้าง slug จากชื่อร้าน — คงตัวอักษรไทย/อังกฤษ/ตัวเลขไว้ ตัดช่องว่างเป็น "-"
- * ถ้าว่างเปล่า คืนค่า fallback แบบสุ่มสั้น ๆ
+ * สุ่ม slug สั้น ๆ ใช้ทำ URL /r/… — เป็นอังกฤษ/ตัวเลขล้วนเสมอ
+ * (ไม่ derive จากชื่อร้าน เพราะชื่อร้านส่วนใหญ่เป็นภาษาไทย ถ้าเอาไปทำ slug
+ * ตรงๆ จะไปชนบั๊ก routing กับ URL ที่มีอักขระไทยได้)
  */
-export function slugify(input: string): string {
-  const s = input
-    .trim()
-    .toLowerCase()
-    .replace(/[\s_/\\]+/g, "-")
-    .replace(/[^\p{L}\p{N}-]+/gu, "")
-    .replace(/-{2,}/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return s || `ran-${Math.random().toString(36).slice(2, 8)}`;
+export function randomSlug(): string {
+  return `r-${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
 }
 
 /** ทำให้ค่า input (อาจเป็น undefined) เป็น array ของ string ที่ไม่ว่าง */

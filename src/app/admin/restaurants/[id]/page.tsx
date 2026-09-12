@@ -17,7 +17,6 @@ export default async function EditRestaurantPage({
 
   const initial: RestaurantInput = {
     name: r.name,
-    slug: r.slug,
     tagline: r.tagline ?? "",
     description: r.description ?? "",
     coverImage: r.coverImage ?? "",

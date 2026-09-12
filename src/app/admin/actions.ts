@@ -1,7 +1,7 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
-import { and, eq, ne } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -13,7 +13,7 @@ import {
   restaurantInputSchema,
   type RestaurantInput,
 } from "@/lib/restaurant-input";
-import { slugify } from "@/lib/utils";
+import { randomSlug } from "@/lib/utils";
 
 function orNull(v: string | undefined | null): string | null {
   const t = (v ?? "").trim();
@@ -25,21 +25,17 @@ function revalidateAll() {
   revalidatePath("/admin");
 }
 
-/** ทำให้ slug ไม่ซ้ำกับร้านอื่น */
-async function uniqueSlug(desired: string, excludeId?: string): Promise<string> {
-  const base = slugify(desired);
-  let candidate = base;
-  for (let i = 2; i < 50; i++) {
+/** สุ่ม slug ใหม่ที่ยังไม่มีร้านอื่นใช้ */
+async function uniqueSlug(): Promise<string> {
+  for (let i = 0; i < 10; i++) {
+    const candidate = randomSlug();
     const clash = await db.query.restaurants.findFirst({
-      where: excludeId
-        ? and(eq(restaurants.slug, candidate), ne(restaurants.id, excludeId))
-        : eq(restaurants.slug, candidate),
+      where: eq(restaurants.slug, candidate),
       columns: { id: true },
     });
     if (!clash) return candidate;
-    candidate = `${base}-${i}`;
   }
-  return `${base}-${randomUUID().slice(0, 6)}`;
+  return `r-${randomUUID().slice(0, 8)}`;
 }
 
 /** เก็บ URL รูปทั้งหมดของร้าน (ไว้ลบตอนลบร้าน) */
@@ -64,11 +60,9 @@ export async function saveRestaurant(
     return { ok: false, error: parsed.error.issues[0]?.message ?? "ข้อมูลไม่ถูกต้อง" };
   }
   const input = parsed.data;
-  const slug = await uniqueSlug(input.slug || input.name, id ?? undefined);
 
   const base = {
     name: input.name,
-    slug,
     tagline: orNull(input.tagline),
     description: orNull(input.description),
     coverImage: orNull(input.coverImage),
@@ -95,9 +89,10 @@ export async function saveRestaurant(
     await db.delete(menuItems).where(eq(menuItems.restaurantId, id));
     await db.delete(contactChannels).where(eq(contactChannels.restaurantId, id));
   } else {
+    const slug = await uniqueSlug();
     const [created] = await db
       .insert(restaurants)
-      .values(base)
+      .values({ ...base, slug })
       .returning({ id: restaurants.id });
     restaurantId = created.id;
   }

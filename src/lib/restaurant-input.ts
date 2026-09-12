@@ -17,7 +17,6 @@ export const contactChannelInputSchema = z.object({
 
 export const restaurantInputSchema = z.object({
   name: z.string().trim().min(1, "กรอกชื่อร้าน"),
-  slug: z.string().trim().min(1, "กรอก slug"),
   tagline: z.string().trim().default(""),
   description: z.string().trim().default(""),
   coverImage: z.string().trim().default(""),
@@ -42,7 +41,6 @@ export type ContactChannelInput = z.infer<typeof contactChannelInputSchema>;
 
 export const emptyRestaurantInput: RestaurantInput = {
   name: "",
-  slug: "",
   tagline: "",
   description: "",
   coverImage: "",
