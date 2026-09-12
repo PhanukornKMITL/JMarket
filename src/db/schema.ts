@@ -25,6 +25,7 @@ export const restaurants = pgTable("restaurants", {
     .notNull()
     .default([]), // URL รูปบอร์ดเมนู/ใบราคา
   foodTags: jsonb("food_tags").$type<string[]>().notNull().default([]),
+  division: text("division").notNull().default("ไม่ระบุ"), // กองงาน/สังกัดของร้าน
   priceRange: text("price_range"), // '฿' | '฿฿' | '฿฿฿'
   provinceText: text("province_text"),
   addressText: text("address_text"),

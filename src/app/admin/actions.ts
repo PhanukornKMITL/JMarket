@@ -69,6 +69,7 @@ export async function saveRestaurant(
     gallery: input.gallery.filter(Boolean),
     menuBoardImages: input.menuBoardImages.filter(Boolean),
     foodTags: input.foodTags.filter(Boolean),
+    division: input.division,
     priceRange: orNull(input.priceRange),
     provinceText: orNull(input.provinceText),
     addressText: orNull(input.addressText),

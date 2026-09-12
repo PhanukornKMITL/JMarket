@@ -7,6 +7,7 @@ const NAV = [
   { href: "/", label: "หน้าแรก" },
   { href: "/restaurants", label: "ร้านค้าทั้งหมด" },
   { href: "/menu", label: "เมนูทั้งหมด" },
+  { href: "/divisions", label: "กองงาน" },
 ];
 
 export function SiteHeader() {

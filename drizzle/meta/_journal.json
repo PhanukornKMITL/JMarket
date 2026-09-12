@@ -8,6 +8,13 @@
       "when": 1788147148409,
       "tag": "0000_mute_johnny_blaze",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789206532688,
+      "tag": "0001_opposite_genesis",
+      "breakpoints": true
     }
   ]
 }

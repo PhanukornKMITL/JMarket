@@ -1,0 +1,1 @@
+ALTER TABLE "restaurants" ADD COLUMN "division" text DEFAULT 'ไม่ระบุ' NOT NULL;

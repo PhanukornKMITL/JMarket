@@ -36,10 +36,12 @@ export function RestaurantForm({
   mode,
   id,
   initial,
+  divisions,
 }: {
   mode: "create" | "edit";
   id: string | null;
   initial: RestaurantInput;
+  divisions: string[];
 }) {
   const [form, setForm] = useState<RestaurantInput>(initial);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +64,10 @@ export function RestaurantForm({
     setError(null);
     if (!form.name.trim()) {
       setError("กรอกชื่อร้าน");
+      return;
+    }
+    if (!form.division.trim()) {
+      setError("เลือกหรือกรอกกองงาน");
       return;
     }
     const payload: RestaurantInput = {
@@ -110,6 +116,24 @@ export function RestaurantForm({
               className={inputCls}
               placeholder="อาหารเจโฮมเมด วัตถุดิบสดใหม่ทุกวัน"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-ink">
+              กองงาน *
+            </label>
+            <input
+              value={form.division}
+              onChange={(e) => set("division", e.target.value)}
+              className={inputCls}
+              placeholder="เลือกจากรายการ หรือพิมพ์กองงานใหม่"
+              list="division-options"
+            />
+            <datalist id="division-options">
+              {divisions.map((d) => (
+                <option key={d} value={d} />
+              ))}
+            </datalist>
           </div>
 
           <div>

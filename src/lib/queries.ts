@@ -32,6 +32,37 @@ export async function getPublishedRestaurants(): Promise<Restaurant[]> {
     .orderBy(...publishedOrder);
 }
 
+/** กองงานทั้งหมดที่มีร้านเผยแพร่อยู่ พร้อมจำนวนร้าน (สำหรับหน้า /divisions) */
+export async function getDivisionsWithCounts(): Promise<
+  { division: string; count: number }[]
+> {
+  const rows = await db
+    .select({ division: restaurants.division })
+    .from(restaurants)
+    .where(eq(restaurants.status, "published"));
+
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    counts.set(r.division, (counts.get(r.division) ?? 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([division, count]) => ({ division, count }))
+    .sort((a, b) => a.division.localeCompare(b.division, "th"));
+}
+
+/** ร้านที่เผยแพร่แล้วในกองงานที่ระบุ (สำหรับหน้า /divisions/[division]) */
+export async function getPublishedRestaurantsByDivision(
+  division: string,
+): Promise<Restaurant[]> {
+  return db
+    .select()
+    .from(restaurants)
+    .where(
+      and(eq(restaurants.status, "published"), eq(restaurants.division, division)),
+    )
+    .orderBy(...publishedOrder);
+}
+
 /** ร้านปักหมุด (สำหรับหน้าแรก) */
 export async function getFeaturedRestaurants(limit = 6): Promise<Restaurant[]> {
   return db
@@ -132,6 +163,14 @@ export async function getRestaurantForEdit(
   ]);
 
   return { ...row, menuItems: items, contactChannels: channels };
+}
+
+/** กองงานทั้งหมดที่เคยมีคนกรอกไว้ (รวมร้านฉบับร่าง) — ใช้เป็นตัวเลือกใน dropdown ของฟอร์ม admin */
+export async function getAllDivisions(): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ division: restaurants.division })
+    .from(restaurants);
+  return rows.map((r) => r.division).sort((a, b) => a.localeCompare(b, "th"));
 }
 
 /** slug ทั้งหมดของร้านที่เผยแพร่ (สำหรับ generateStaticParams ถ้าต้องใช้) */

@@ -19,6 +19,7 @@ async function main() {
       description:
         "ร้านอาหารเจเล็ก ๆ บรรยากาศสวน ทำสด ๆ ทุกจาน ไม่ใช้ผงชูรส\nเปิดมากว่า 8 ปี ลูกค้าประจำเยอะ",
       foodTags: ["ตามสั่ง", "ข้าวราดแกง"],
+      division: "กองงานเหนือ",
       priceRange: "฿",
       provinceText: "เชียงใหม่",
       addressText: "123 ถ.สุเทพ ต.สุเทพ อ.เมือง เชียงใหม่",
@@ -48,6 +49,7 @@ async function main() {
       description:
         "บุฟเฟต์อาหารเจกว่า 30 อย่าง หมุนเวียนทุกวัน เปิด 10:00–20:00\nมีที่จอดรถกว้าง",
       foodTags: ["บุฟเฟต์"],
+      division: "กองงานกลาง",
       priceRange: "฿฿",
       provinceText: "กรุงเทพมหานคร",
       addressText: "ตลาดเจ เขตจตุจักร กทม.",
@@ -67,6 +69,7 @@ async function main() {
       description:
         "คาเฟ่ขนมเจสไตล์โฮมเบเกอรี่ เค้ก คุกกี้ กาแฟ นมพืช\nนั่งชิลได้ทั้งวัน",
       foodTags: ["ขนม-เครื่องดื่ม"],
+      division: "กองงานใต้",
       priceRange: "฿฿",
       provinceText: "ภูเก็ต",
       phones: ["076-555-1234"],
@@ -97,6 +100,7 @@ async function main() {
         tagline: r.tagline,
         description: r.description,
         foodTags: r.foodTags,
+        division: r.division,
         priceRange: r.priceRange,
         provinceText: r.provinceText,
         addressText: r.addressText ?? null,

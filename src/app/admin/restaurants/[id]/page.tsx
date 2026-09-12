@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { getRestaurantForEdit } from "@/lib/queries";
+import { getAllDivisions, getRestaurantForEdit } from "@/lib/queries";
 import type { RestaurantInput } from "@/lib/restaurant-input";
 import { RestaurantForm } from "../../_components/RestaurantForm";
 
@@ -12,7 +12,10 @@ export default async function EditRestaurantPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const r = await getRestaurantForEdit(id);
+  const [r, divisions] = await Promise.all([
+    getRestaurantForEdit(id),
+    getAllDivisions(),
+  ]);
   if (!r) notFound();
 
   const initial: RestaurantInput = {
@@ -23,6 +26,7 @@ export default async function EditRestaurantPage({
     gallery: r.gallery ?? [],
     menuBoardImages: r.menuBoardImages ?? [],
     foodTags: r.foodTags ?? [],
+    division: r.division,
     priceRange: r.priceRange ?? "",
     provinceText: r.provinceText ?? "",
     addressText: r.addressText ?? "",
@@ -45,5 +49,7 @@ export default async function EditRestaurantPage({
     })),
   };
 
-  return <RestaurantForm mode="edit" id={r.id} initial={initial} />;
+  return (
+    <RestaurantForm mode="edit" id={r.id} initial={initial} divisions={divisions} />
+  );
 }
