@@ -23,6 +23,8 @@ function getDb(): DB {
     postgres(connectionString, {
       prepare: false, // จำเป็นเมื่อต่อผ่าน Supabase transaction pooler (pgbouncer)
       max: 1,
+      idle_timeout: 20, // ปิด connection เองถ้าไม่ได้ใช้เกิน 20 วิ กัน serverless instance ที่ warm อยู่ถือ connection ค้างไว้นานเกินจำเป็น
+      connect_timeout: 10,
     });
 
   const instance = drizzle(client, { schema, casing: "snake_case" });
