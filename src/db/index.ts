@@ -27,10 +27,10 @@ function getDb(): DB {
 
   const instance = drizzle(client, { schema, casing: "snake_case" });
 
-  if (process.env.NODE_ENV !== "production") {
-    globalForDb.__jmarketClient = client;
-    globalForDb.__jmarketDb = instance;
-  }
+  // cache เสมอ (ทั้ง dev และ production) — serverless function ที่ยัง warm อยู่
+  // จะได้ใช้ connection เดิมซ้ำ แทนที่จะเปิดใหม่ทุก request จนชน connection limit ของ Supabase
+  globalForDb.__jmarketClient = client;
+  globalForDb.__jmarketDb = instance;
   return instance;
 }
 
