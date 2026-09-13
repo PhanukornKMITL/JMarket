@@ -79,8 +79,8 @@ export default async function RestaurantDetailPage({ params }: Params) {
       </Link>
 
       {/* 1. หัวเรื่อง */}
-      <div className="mt-4 overflow-hidden rounded-card border border-brand-100 bg-surface">
-        <div className="aspect-[16/9] w-full bg-brand-50 sm:aspect-[21/9]">
+      <div className="mt-4 flex flex-col items-center gap-4 rounded-card border border-brand-100 bg-surface p-6 text-center sm:flex-row sm:text-left">
+        <div className="size-32 shrink-0 overflow-hidden rounded-full border border-brand-100 bg-brand-50">
           {r.coverImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -92,8 +92,8 @@ export default async function RestaurantDetailPage({ params }: Params) {
             <ImagePlaceholder label={r.name} className="size-full" />
           )}
         </div>
-        <div className="p-5">
-          <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
             <h1 className="text-2xl font-extrabold text-ink">{r.name}</h1>
             {r.priceRange ? (
               <span className="text-lg font-bold text-brand-600">
@@ -101,6 +101,12 @@ export default async function RestaurantDetailPage({ params }: Params) {
               </span>
             ) : null}
           </div>
+          <Link
+            href={`/divisions/${encodeURIComponent(r.division)}`}
+            className="mt-2 inline-block rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 hover:bg-brand-100"
+          >
+            {r.division}
+          </Link>
         </div>
       </div>
 
