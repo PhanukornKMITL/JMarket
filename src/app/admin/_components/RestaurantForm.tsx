@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 
-import { FOOD_TAGS, PRICE_RANGES } from "@/lib/constants";
+import { FOOD_TAGS } from "@/lib/constants";
 import type { RestaurantInput } from "@/lib/restaurant-input";
 import { saveRestaurant } from "../actions";
 import { ContactChannelsEditor } from "./ContactChannelsEditor";
@@ -46,6 +46,10 @@ export function RestaurantForm({
   const [form, setForm] = useState<RestaurantInput>(initial);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [divisionCustom, setDivisionCustom] = useState(
+    () => initial.division !== "" && !divisions.includes(initial.division),
+  );
+  const NEW_DIVISION = "__new__";
 
   function set<K extends keyof RestaurantInput>(key: K, value: RestaurantInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -123,18 +127,48 @@ export function RestaurantForm({
             <label className="mb-1 block text-sm font-medium text-ink">
               กองงาน *
             </label>
-            <input
-              value={form.division}
-              onChange={(e) => set("division", e.target.value)}
-              className={inputCls}
-              placeholder="เลือกจากรายการ หรือพิมพ์กองงานใหม่"
-              list="division-options"
-            />
-            <datalist id="division-options">
-              {divisions.map((d) => (
-                <option key={d} value={d} />
-              ))}
-            </datalist>
+            {divisionCustom ? (
+              <div className="flex gap-2">
+                <input
+                  autoFocus
+                  value={form.division}
+                  onChange={(e) => set("division", e.target.value)}
+                  className={inputCls}
+                  placeholder="พิมพ์ชื่อกองงานใหม่"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDivisionCustom(false);
+                    set("division", "");
+                  }}
+                  className="shrink-0 rounded-lg border border-brand-200 px-3 text-xs text-muted hover:bg-brand-50"
+                >
+                  เลือกจากรายการ
+                </button>
+              </div>
+            ) : (
+              <select
+                value={form.division}
+                onChange={(e) => {
+                  if (e.target.value === NEW_DIVISION) {
+                    setDivisionCustom(true);
+                    set("division", "");
+                  } else {
+                    set("division", e.target.value);
+                  }
+                }}
+                className={inputCls}
+              >
+                <option value="">— เลือกกองงาน —</option>
+                {divisions.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+                <option value={NEW_DIVISION}>+ เพิ่มกองงานใหม่</option>
+              </select>
+            )}
           </div>
 
           <div>
@@ -148,37 +182,6 @@ export function RestaurantForm({
               className={inputCls}
               placeholder="เล่าเรื่องร้าน จุดเด่น เมนูซิกเนเจอร์ ฯลฯ"
             />
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-ink">
-                ช่วงราคา
-              </label>
-              <select
-                value={form.priceRange}
-                onChange={(e) => set("priceRange", e.target.value)}
-                className={inputCls}
-              >
-                <option value="">— ไม่ระบุ —</option>
-                {PRICE_RANGES.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-ink">
-                ลำดับการเรียง (เลขน้อย = ขึ้นก่อน)
-              </label>
-              <input
-                type="number"
-                value={form.sortOrder}
-                onChange={(e) => set("sortOrder", Number(e.target.value) || 0)}
-                className={inputCls}
-              />
-            </div>
           </div>
 
           <div>
