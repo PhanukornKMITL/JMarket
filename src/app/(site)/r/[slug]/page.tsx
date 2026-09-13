@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 
 import { Container } from "@/components/Container";
 import { ContactBox } from "@/components/ContactBox";
-import { Gallery } from "@/components/Gallery";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import type { MenuItem } from "@/db/schema";
 import { getRestaurantBySlug } from "@/lib/queries";
@@ -120,37 +119,18 @@ export default async function RestaurantDetailPage({ params }: Params) {
         ) : null}
 
         {/* 4. เมนู */}
-        {r.menuItems.length > 0 || r.menuBoardImages.length > 0 ? (
+        {r.menuItems.length > 0 ? (
           <section>
             <h2 className="mb-3 text-lg font-bold text-ink">เมนู</h2>
-            {r.menuItems.length > 0 ? (
-              <ul className="space-y-2">
-                {r.menuItems.map((item) => (
-                  <MenuRow key={item.id} item={item} />
-                ))}
-              </ul>
-            ) : null}
-            {r.menuBoardImages.length > 0 ? (
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {r.menuBoardImages.map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={`${src}-${i}`}
-                    src={src}
-                    alt={`เมนู ${i + 1}`}
-                    loading="lazy"
-                    className="w-full rounded-xl border border-brand-100 object-cover"
-                  />
-                ))}
-              </div>
-            ) : null}
+            <ul className="space-y-2">
+              {r.menuItems.map((item) => (
+                <MenuRow key={item.id} item={item} />
+              ))}
+            </ul>
           </section>
         ) : null}
 
-        {/* 5. แกลเลอรี */}
-        <Gallery images={r.gallery} title="บรรยากาศร้าน" />
-
-        {/* 6. ที่อยู่ */}
+        {/* 5. ที่อยู่ */}
         {r.addressText || r.mapUrl ? (
           <section>
             <h2 className="mb-2 text-lg font-bold text-ink">ที่อยู่</h2>

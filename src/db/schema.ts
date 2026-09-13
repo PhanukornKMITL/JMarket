@@ -18,11 +18,6 @@ export const restaurants = pgTable("restaurants", {
   slug: text("slug").notNull().unique(),
   description: text("description"), // รายละเอียดร้าน (ย่อหน้ายาว)
   coverImage: text("cover_image"), // URL รูปหน้าปก
-  gallery: jsonb("gallery").$type<string[]>().notNull().default([]), // URL รูปบรรยากาศ
-  menuBoardImages: jsonb("menu_board_images")
-    .$type<string[]>()
-    .notNull()
-    .default([]), // URL รูปบอร์ดเมนู/ใบราคา
   division: text("division").notNull().default("ไม่ระบุ"), // กองงาน/สังกัดของร้าน
   priceRange: text("price_range"), // '฿' | '฿฿' | '฿฿฿'
   provinceText: text("province_text"),

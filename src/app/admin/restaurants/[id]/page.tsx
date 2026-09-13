@@ -22,8 +22,6 @@ export default async function EditRestaurantPage({
     name: r.name,
     description: r.description ?? "",
     coverImage: r.coverImage ?? "",
-    gallery: r.gallery ?? [],
-    menuBoardImages: r.menuBoardImages ?? [],
     division: r.division,
     priceRange: r.priceRange ?? "",
     provinceText: r.provinceText ?? "",

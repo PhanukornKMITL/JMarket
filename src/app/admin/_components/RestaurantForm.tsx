@@ -7,7 +7,6 @@ import type { RestaurantInput } from "@/lib/restaurant-input";
 import { saveRestaurant } from "../actions";
 import { ContactChannelsEditor } from "./ContactChannelsEditor";
 import { ImageField } from "./ImageField";
-import { ImageListField } from "./ImageListField";
 import { MenuItemsEditor } from "./MenuItemsEditor";
 
 function Section({
@@ -177,26 +176,12 @@ export function RestaurantForm({
 
       {/* รูป */}
       <Section title="รูปภาพ">
-        <div className="space-y-4">
-          <ImageField
-            label="รูปหน้าปก"
-            value={form.coverImage}
-            prefix="cover"
-            onChange={(url) => set("coverImage", url)}
-          />
-          <ImageListField
-            label="แกลเลอรีบรรยากาศร้าน"
-            values={form.gallery}
-            prefix="gallery"
-            onChange={(urls) => set("gallery", urls)}
-          />
-          <ImageListField
-            label="รูปบอร์ดเมนู / ใบราคา"
-            values={form.menuBoardImages}
-            prefix="menu-board"
-            onChange={(urls) => set("menuBoardImages", urls)}
-          />
-        </div>
+        <ImageField
+          label="รูปหน้าปก"
+          value={form.coverImage}
+          prefix="cover"
+          onChange={(url) => set("coverImage", url)}
+        />
       </Section>
 
       {/* ทำเล */}

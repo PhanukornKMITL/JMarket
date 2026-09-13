@@ -38,17 +38,6 @@ async function uniqueSlug(): Promise<string> {
   return `r-${randomUUID().slice(0, 8)}`;
 }
 
-/** เก็บ URL รูปทั้งหมดของร้าน (ไว้ลบตอนลบร้าน) */
-function collectImageUrls(row: {
-  coverImage: string | null;
-  gallery: string[];
-  menuBoardImages: string[];
-}): string[] {
-  return [row.coverImage ?? "", ...row.gallery, ...row.menuBoardImages].filter(
-    Boolean,
-  );
-}
-
 export async function saveRestaurant(
   id: string | null,
   raw: RestaurantInput,
@@ -65,8 +54,6 @@ export async function saveRestaurant(
     name: input.name,
     description: orNull(input.description),
     coverImage: orNull(input.coverImage),
-    gallery: input.gallery.filter(Boolean),
-    menuBoardImages: input.menuBoardImages.filter(Boolean),
     division: input.division,
     priceRange: orNull(input.priceRange),
     provinceText: orNull(input.provinceText),
@@ -133,7 +120,7 @@ export async function deleteRestaurant(formData: FormData): Promise<void> {
 
   const row = await db.query.restaurants.findFirst({
     where: eq(restaurants.id, id),
-    columns: { coverImage: true, gallery: true, menuBoardImages: true },
+    columns: { coverImage: true },
   });
   const items = await db
     .select({ photo: menuItems.photo })
@@ -147,7 +134,7 @@ export async function deleteRestaurant(formData: FormData): Promise<void> {
   await db.delete(restaurants).where(eq(restaurants.id, id));
 
   const urls = [
-    ...(row ? collectImageUrls(row) : []),
+    row?.coverImage ?? "",
     ...items.map((i) => i.photo ?? ""),
     ...channels.map((c) => c.qrImage ?? ""),
   ].filter(Boolean);
