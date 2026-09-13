@@ -25,6 +25,12 @@ function getDb(): DB {
       max: 1,
       idle_timeout: 20, // ปิด connection เองถ้าไม่ได้ใช้เกิน 20 วิ กัน serverless instance ที่ warm อยู่ถือ connection ค้างไว้นานเกินจำเป็น
       connect_timeout: 10,
+      // วน connection ใหม่ทุก 5 นาที กัน connection ที่ค้างจาก serverless
+      // freeze/thaw หรือ Supabase restart กลาย เป็น socket ตายที่แขวนไม่มีวันตอบกลับ
+      max_lifetime: 60 * 5,
+      // ให้ Postgres ยกเลิก query เองถ้ารันเกิน 10 วิ (รวมเวลารอ lock ด้วย)
+      // กันไม่ให้ request ค้างไม่มีที่สิ้นสุดถ้ามี transaction อื่นถือ lock ไว้
+      connection: { statement_timeout: 10000 },
     });
 
   const instance = drizzle(client, { schema, casing: "snake_case" });

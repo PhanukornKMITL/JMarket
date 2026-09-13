@@ -91,11 +91,15 @@ npm run dev
 
 1. push repo นี้ขึ้น GitHub แล้ว import เข้า Vercel
 2. ใส่ Environment Variables ทั้งหมดจาก `.env` (ตั้ง `SITE_URL`
-   เป็น URL จริงของ Vercel เช่น `https://jmarket-xxx.vercel.app` และต้องมี
-   `DIRECT_URL` ด้วย — ใช้รัน migration ตอน build)
-3. Deploy — Vercel เจอสคริปต์ `vercel-build` ใน `package.json` แล้วรันแทน `build`
-   อัตโนมัติ ซึ่งจะรัน `drizzle-kit migrate` ให้ก่อน แล้วค่อย `next build` ทุกครั้งที่ deploy
-   (ไม่ต้อง `npm run db:migrate` มือเองอีกแล้ว — ยกเว้นตอน dev ในเครื่อง)
+   เป็น URL จริงของ Vercel เช่น `https://jmarket-xxx.vercel.app`)
+3. Deploy — Vercel รัน `npm run build` ให้อัตโนมัติ
+4. ถ้ามี schema เปลี่ยน ต้องรัน migration จากเครื่องเอง (ชี้ `DIRECT_URL` ไปที่ Supabase เดียวกัน)
+   **ก่อน** merge เข้า main (กันเว็บพังตอน column ยังไม่มีแต่ build ใหม่ไปเรียกใช้แล้ว):
+   ```bash
+   npm run db:migrate
+   ```
+   *(เคยลองให้รัน migration ในขั้นตอน build บน Vercel อัตโนมัติ แต่พบว่าเสี่ยงต่อ
+   connection ค้างระหว่าง build container ปิดตัว จึงย้อนกลับมาใช้วิธีรันมือ)*
 
 ### กัน Supabase หลับ (free tier หยุดโปรเจคเมื่อไม่มี request 7 วัน)
 
