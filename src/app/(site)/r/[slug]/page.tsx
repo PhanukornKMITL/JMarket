@@ -79,7 +79,7 @@ export default async function RestaurantDetailPage({ params }: Params) {
       </Link>
 
       {/* 1. หัวเรื่อง */}
-      <div className="mt-4 flex flex-col items-center gap-4 rounded-card border border-brand-100 bg-surface p-6 text-center sm:flex-row sm:text-left">
+      <div className="mt-4 flex flex-col items-center gap-4 rounded-card border border-brand-100 bg-surface p-6 text-center">
         <div className="size-32 shrink-0 overflow-hidden rounded-full border border-brand-100 bg-brand-50">
           {r.coverImage ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -92,8 +92,8 @@ export default async function RestaurantDetailPage({ params }: Params) {
             <ImagePlaceholder label={r.name} className="size-full" />
           )}
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             <h1 className="text-2xl font-extrabold text-ink">{r.name}</h1>
             {r.priceRange ? (
               <span className="text-lg font-bold text-brand-600">
