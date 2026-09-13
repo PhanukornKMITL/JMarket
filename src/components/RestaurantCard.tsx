@@ -40,22 +40,10 @@ export function RestaurantCard({ restaurant: r }: { restaurant: Restaurant }) {
           ) : null}
         </div>
 
-        {r.tagline ? (
-          <p className="line-clamp-2 text-sm text-muted">{r.tagline}</p>
-        ) : null}
-
         <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-1">
           {r.provinceText ? (
             <span className="text-xs text-muted">📍 {r.provinceText}</span>
           ) : null}
-          {r.foodTags.slice(0, 3).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-brand-50 px-2 py-0.5 text-xs text-brand-700"
-            >
-              {tag}
-            </span>
-          ))}
         </div>
       </div>
     </Link>

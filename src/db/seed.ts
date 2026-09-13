@@ -15,10 +15,8 @@ async function main() {
     {
       name: "ครัวเจบ้านสวน",
       slug: "krua-jae-baan-suan",
-      tagline: "อาหารเจโฮมเมด วัตถุดิบสดใหม่ทุกวัน",
       description:
         "ร้านอาหารเจเล็ก ๆ บรรยากาศสวน ทำสด ๆ ทุกจาน ไม่ใช้ผงชูรส\nเปิดมากว่า 8 ปี ลูกค้าประจำเยอะ",
-      foodTags: ["ตามสั่ง", "ข้าวราดแกง"],
       division: "กองงานเหนือ",
       priceRange: "฿",
       provinceText: "เชียงใหม่",
@@ -28,10 +26,10 @@ async function main() {
       featured: true,
       sortOrder: 1,
       menu: [
-        { name: "ผัดกะเพราเห็ดรวม", price: "60", recommended: true },
-        { name: "ข้าวผัดเจ", price: "50", recommended: true },
-        { name: "ต้มยำเห็ด", price: "70", recommended: false },
-        { name: "แกงเขียวหวานลูกชิ้นเจ", price: "65", recommended: false },
+        { name: "ผัดกะเพราเห็ดรวม", price: "60", foodTag: "อาหารสด/แห้ง" },
+        { name: "ข้าวผัดเจ", price: "50", foodTag: "อาหารสด/แห้ง" },
+        { name: "ต้มยำเห็ด", price: "70", foodTag: "อาหารสด/แห้ง" },
+        { name: "แกงเขียวหวานลูกชิ้นเจ", price: "65", foodTag: "อาหารแช่แข็ง" },
       ],
       contacts: [
         { type: "LINE", label: "LINE ร้าน", value: "@kruajae" },
@@ -45,10 +43,8 @@ async function main() {
     {
       name: "เจ๊หมวย โภชนาเจ",
       slug: "jae-muay-phochana-jae",
-      tagline: "บุฟเฟต์เจ 99 บาท อิ่มไม่อั้น",
       description:
         "บุฟเฟต์อาหารเจกว่า 30 อย่าง หมุนเวียนทุกวัน เปิด 10:00–20:00\nมีที่จอดรถกว้าง",
-      foodTags: ["บุฟเฟต์"],
       division: "กองงานกลาง",
       priceRange: "฿฿",
       provinceText: "กรุงเทพมหานคร",
@@ -57,18 +53,16 @@ async function main() {
       featured: true,
       sortOrder: 2,
       menu: [
-        { name: "บุฟเฟต์เจ (ต่อคน)", price: "99", recommended: true },
-        { name: "น้ำสมุนไพร", price: "15", recommended: false },
+        { name: "บุฟเฟต์เจ (ต่อคน)", price: "99", foodTag: "อาหารสด/แห้ง" },
+        { name: "น้ำสมุนไพร", price: "15", foodTag: "" },
       ],
       contacts: [{ type: "LINE", label: "จองโต๊ะ", value: "@jaemuay" }],
     },
     {
       name: "อิ่มบุญ วีแกนคาเฟ่",
       slug: "im-boon-vegan-cafe",
-      tagline: "ขนมและเครื่องดื่มเจ ไม่มีนม ไม่มีไข่",
       description:
         "คาเฟ่ขนมเจสไตล์โฮมเบเกอรี่ เค้ก คุกกี้ กาแฟ นมพืช\nนั่งชิลได้ทั้งวัน",
-      foodTags: ["ขนม-เครื่องดื่ม"],
       division: "กองงานใต้",
       priceRange: "฿฿",
       provinceText: "ภูเก็ต",
@@ -76,9 +70,9 @@ async function main() {
       featured: false,
       sortOrder: 3,
       menu: [
-        { name: "บราวนี่เจ", price: "55", recommended: true },
-        { name: "ลาเต้นมโอ๊ต", price: "70", recommended: true },
-        { name: "คุกกี้ธัญพืช", price: "40", recommended: false },
+        { name: "บราวนี่เจ", price: "55", foodTag: "ขนม" },
+        { name: "ลาเต้นมโอ๊ต", price: "70", foodTag: "" },
+        { name: "คุกกี้ธัญพืช", price: "40", foodTag: "ขนม" },
       ],
       contacts: [
         {
@@ -97,9 +91,7 @@ async function main() {
       .values({
         name: r.name,
         slug: r.slug,
-        tagline: r.tagline,
         description: r.description,
-        foodTags: r.foodTags,
         division: r.division,
         priceRange: r.priceRange,
         provinceText: r.provinceText,
@@ -117,7 +109,7 @@ async function main() {
         restaurantId: row.id,
         name: m.name,
         price: m.price,
-        recommended: m.recommended,
+        foodTag: m.foodTag || null,
         sortOrder: i,
       })),
     );

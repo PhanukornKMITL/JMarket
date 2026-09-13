@@ -1,5 +1,6 @@
 "use client";
 
+import { FOOD_TAGS } from "@/lib/constants";
 import type { MenuItemInput } from "@/lib/restaurant-input";
 import { ImageField } from "./ImageField";
 
@@ -7,7 +8,7 @@ const EMPTY: MenuItemInput = {
   name: "",
   price: "",
   photo: "",
-  recommended: false,
+  foodTag: "",
 };
 
 export function MenuItemsEditor({
@@ -52,14 +53,18 @@ export function MenuItemsEditor({
                 placeholder='ราคา เช่น "60" หรือ "60-90"'
                 className="w-full rounded-lg border border-brand-200 bg-surface px-3 py-2 text-sm outline-none focus:border-brand-400"
               />
-              <label className="flex items-center gap-2 text-sm text-ink">
-                <input
-                  type="checkbox"
-                  checked={it.recommended}
-                  onChange={(e) => update(i, { recommended: e.target.checked })}
-                />
-                เมนูแนะนำ (ขึ้นหน้า “เมนูทั้งหมด”)
-              </label>
+              <select
+                value={it.foodTag}
+                onChange={(e) => update(i, { foodTag: e.target.value })}
+                className="w-full rounded-lg border border-brand-200 bg-surface px-3 py-2 text-sm outline-none focus:border-brand-400"
+              >
+                <option value="">— ไม่ระบุแท็ก —</option>
+                {FOOD_TAGS.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
             </div>
             <ImageField
               label="รูปเมนู"

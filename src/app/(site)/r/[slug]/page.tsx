@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const r = await getRestaurantBySlug(slug);
   if (!r) return { title: "ไม่พบร้าน" };
 
-  const description = r.tagline ?? r.description ?? `ร้านอาหารเจ ${r.name}`;
+  const description = r.description ?? `ร้านอาหารเจ ${r.name}`;
   return {
     title: r.name,
     description,
@@ -49,9 +49,9 @@ function MenuRow({ item }: { item: MenuItem }) {
       <div className="min-w-0 flex-1">
         <p className="flex items-center gap-2 font-semibold text-ink">
           {item.name}
-          {item.recommended ? (
+          {item.foodTag ? (
             <span className="rounded-full bg-brand-100 px-2 py-0.5 text-xs text-brand-700">
-              แนะนำ
+              {item.foodTag}
             </span>
           ) : null}
         </p>
@@ -102,19 +102,6 @@ export default async function RestaurantDetailPage({ params }: Params) {
               </span>
             ) : null}
           </div>
-          {r.tagline ? <p className="mt-1 text-muted">{r.tagline}</p> : null}
-          {r.foodTags.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {r.foodTags.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full bg-brand-50 px-2.5 py-1 text-xs text-brand-700"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          ) : null}
         </div>
       </div>
 

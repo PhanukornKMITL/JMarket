@@ -63,12 +63,10 @@ export async function saveRestaurant(
 
   const base = {
     name: input.name,
-    tagline: orNull(input.tagline),
     description: orNull(input.description),
     coverImage: orNull(input.coverImage),
     gallery: input.gallery.filter(Boolean),
     menuBoardImages: input.menuBoardImages.filter(Boolean),
-    foodTags: input.foodTags.filter(Boolean),
     division: input.division,
     priceRange: orNull(input.priceRange),
     provinceText: orNull(input.provinceText),
@@ -105,7 +103,7 @@ export async function saveRestaurant(
         name: m.name,
         price: orNull(m.price),
         photo: orNull(m.photo),
-        recommended: m.recommended,
+        foodTag: orNull(m.foodTag),
         sortOrder: i,
       })),
     );

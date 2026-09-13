@@ -87,7 +87,7 @@ export async function getRestaurantBySlug(
       .select()
       .from(menuItems)
       .where(eq(menuItems.restaurantId, row.id))
-      .orderBy(desc(menuItems.recommended), asc(menuItems.sortOrder)),
+      .orderBy(asc(menuItems.sortOrder)),
     db
       .select()
       .from(contactChannels)
@@ -101,28 +101,25 @@ export async function getRestaurantBySlug(
 export type MenuItemWithRestaurant = MenuItem & {
   restaurantName: string;
   restaurantSlug: string;
-  restaurantTags: string[];
 };
 
-/** เมนูแนะนำจากทุกร้าน (สำหรับหน้า /menu) */
-export async function getRecommendedMenuItems(): Promise<MenuItemWithRestaurant[]> {
+/** เมนูทั้งหมดจากร้านที่เผยแพร่แล้ว (สำหรับหน้า /menu) */
+export async function getAllMenuItems(): Promise<MenuItemWithRestaurant[]> {
   const rows = await db
     .select({
       item: menuItems,
       name: restaurants.name,
       slug: restaurants.slug,
-      tags: restaurants.foodTags,
     })
     .from(menuItems)
     .innerJoin(restaurants, eq(menuItems.restaurantId, restaurants.id))
-    .where(and(eq(menuItems.recommended, true), eq(restaurants.status, "published")))
+    .where(eq(restaurants.status, "published"))
     .orderBy(asc(restaurants.sortOrder), asc(menuItems.sortOrder));
 
   return rows.map((r) => ({
     ...r.item,
     restaurantName: r.name,
     restaurantSlug: r.slug,
-    restaurantTags: r.tags ?? [],
   }));
 }
 

@@ -5,7 +5,7 @@ export const menuItemInputSchema = z.object({
   name: z.string().trim().min(1, "กรอกชื่อเมนู"),
   price: z.string().trim().default(""),
   photo: z.string().trim().default(""),
-  recommended: z.boolean().default(false),
+  foodTag: z.string().trim().default(""),
 });
 
 export const contactChannelInputSchema = z.object({
@@ -17,12 +17,10 @@ export const contactChannelInputSchema = z.object({
 
 export const restaurantInputSchema = z.object({
   name: z.string().trim().min(1, "กรอกชื่อร้าน"),
-  tagline: z.string().trim().default(""),
   description: z.string().trim().default(""),
   coverImage: z.string().trim().default(""),
   gallery: z.array(z.string()).default([]),
   menuBoardImages: z.array(z.string()).default([]),
-  foodTags: z.array(z.string()).default([]),
   division: z.string().trim().min(1, "เลือกกองงาน"),
   priceRange: z.string().trim().default(""),
   provinceText: z.string().trim().default(""),
@@ -42,12 +40,10 @@ export type ContactChannelInput = z.infer<typeof contactChannelInputSchema>;
 
 export const emptyRestaurantInput: RestaurantInput = {
   name: "",
-  tagline: "",
   description: "",
   coverImage: "",
   gallery: [],
   menuBoardImages: [],
-  foodTags: [],
   division: "",
   priceRange: "",
   provinceText: "",

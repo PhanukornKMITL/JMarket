@@ -5,17 +5,17 @@ import { cn } from "@/lib/utils";
 export function FilterBar({
   query,
   onQuery,
-  tags,
-  activeTags,
+  tags = [],
+  activeTags = [],
   onToggleTag,
   placeholder = "ค้นหา…",
   resultCount,
 }: {
   query: string;
   onQuery: (v: string) => void;
-  tags: string[];
-  activeTags: string[];
-  onToggleTag: (tag: string) => void;
+  tags?: string[];
+  activeTags?: string[];
+  onToggleTag?: (tag: string) => void;
   placeholder?: string;
   resultCount: number;
 }) {
@@ -37,7 +37,7 @@ export function FilterBar({
               <button
                 key={tag}
                 type="button"
-                onClick={() => onToggleTag(tag)}
+                onClick={() => onToggleTag?.(tag)}
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-sm transition-colors",
                   active

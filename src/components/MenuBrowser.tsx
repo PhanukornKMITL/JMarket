@@ -25,7 +25,7 @@ export function MenuBrowser({
         it.restaurantName.toLowerCase().includes(q);
       const matchTags =
         activeTags.length === 0 ||
-        activeTags.some((t) => it.restaurantTags.includes(t));
+        (it.foodTag != null && activeTags.includes(it.foodTag));
       return matchQ && matchTags;
     });
   }, [items, query, activeTags]);

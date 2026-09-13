@@ -4,9 +4,9 @@ import { Container } from "@/components/Container";
 import { MenuCard } from "@/components/MenuCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import {
+  getAllMenuItems,
   getFeaturedRestaurants,
   getPublishedRestaurants,
-  getRecommendedMenuItems,
 } from "@/lib/queries";
 import { SITE_TAGLINE } from "@/lib/constants";
 
@@ -18,10 +18,10 @@ export default async function HomePage() {
   // แย่ง connection เดียวกันจนค้าง
   const featured = await getFeaturedRestaurants(6);
   const all = await getPublishedRestaurants();
-  const recommended = await getRecommendedMenuItems();
+  const allMenuItems = await getAllMenuItems();
 
   const featuredList = featured.length > 0 ? featured : all.slice(0, 6);
-  const menuStrip = recommended.slice(0, 8);
+  const menuStrip = allMenuItems.slice(0, 8);
 
   return (
     <>
@@ -86,7 +86,7 @@ export default async function HomePage() {
         {menuStrip.length > 0 ? (
           <div className="mt-14">
             <div className="mb-4 flex items-end justify-between">
-              <h2 className="text-xl font-bold text-ink">เมนูแนะนำ</h2>
+              <h2 className="text-xl font-bold text-ink">เมนู</h2>
               <Link
                 href="/menu"
                 className="text-sm font-medium text-brand-700 hover:underline"

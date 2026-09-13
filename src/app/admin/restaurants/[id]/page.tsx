@@ -20,12 +20,10 @@ export default async function EditRestaurantPage({
 
   const initial: RestaurantInput = {
     name: r.name,
-    tagline: r.tagline ?? "",
     description: r.description ?? "",
     coverImage: r.coverImage ?? "",
     gallery: r.gallery ?? [],
     menuBoardImages: r.menuBoardImages ?? [],
-    foodTags: r.foodTags ?? [],
     division: r.division,
     priceRange: r.priceRange ?? "",
     provinceText: r.provinceText ?? "",
@@ -39,7 +37,7 @@ export default async function EditRestaurantPage({
       name: m.name,
       price: m.price ?? "",
       photo: m.photo ?? "",
-      recommended: m.recommended,
+      foodTag: m.foodTag ?? "",
     })),
     contactChannels: r.contactChannels.map((c) => ({
       type: c.type,

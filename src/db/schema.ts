@@ -16,7 +16,6 @@ export const restaurants = pgTable("restaurants", {
     .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
-  tagline: text("tagline"), // คำโปรย 1 บรรทัด
   description: text("description"), // รายละเอียดร้าน (ย่อหน้ายาว)
   coverImage: text("cover_image"), // URL รูปหน้าปก
   gallery: jsonb("gallery").$type<string[]>().notNull().default([]), // URL รูปบรรยากาศ
@@ -24,7 +23,6 @@ export const restaurants = pgTable("restaurants", {
     .$type<string[]>()
     .notNull()
     .default([]), // URL รูปบอร์ดเมนู/ใบราคา
-  foodTags: jsonb("food_tags").$type<string[]>().notNull().default([]),
   division: text("division").notNull().default("ไม่ระบุ"), // กองงาน/สังกัดของร้าน
   priceRange: text("price_range"), // '฿' | '฿฿' | '฿฿฿'
   provinceText: text("province_text"),
@@ -55,7 +53,7 @@ export const menuItems = pgTable("menu_items", {
   name: text("name").notNull(),
   price: text("price"), // เก็บเป็นข้อความ เช่น "60", "60-90", "ตามสั่ง"
   photo: text("photo"),
-  recommended: boolean("recommended").notNull().default(false),
+  foodTag: text("food_tag"), // หมวดอาหารของเมนูนี้ (ขนม / อาหารสด-แห้ง / อาหารแช่แข็ง)
   sortOrder: integer("sort_order").notNull().default(0),
 });
 

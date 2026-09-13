@@ -32,9 +32,9 @@ export default async function OgImage({
   const { slug } = await params;
   const r = await getRestaurantBySlug(slug);
   const name = r?.name ?? SITE_NAME;
-  const tagline = r?.tagline ?? "ร้านอาหารเจ";
+  const subtitle = r?.provinceText ? `📍 ${r.provinceText}` : "ร้านอาหารเจ";
 
-  const font = await loadThaiFont(`${name}${tagline}${SITE_NAME}เจร้านอาหาร`);
+  const font = await loadThaiFont(`${name}${subtitle}${SITE_NAME}เจร้านอาหาร`);
 
   return new ImageResponse(
     (
@@ -74,7 +74,7 @@ export default async function OgImage({
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.1 }}>
             {name}
           </div>
-          <div style={{ fontSize: 34, opacity: 0.9 }}>{tagline}</div>
+          <div style={{ fontSize: 34, opacity: 0.9 }}>{subtitle}</div>
         </div>
       </div>
     ),

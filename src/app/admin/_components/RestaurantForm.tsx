@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 
-import { FOOD_TAGS } from "@/lib/constants";
 import type { RestaurantInput } from "@/lib/restaurant-input";
 import { saveRestaurant } from "../actions";
 import { ContactChannelsEditor } from "./ContactChannelsEditor";
@@ -55,15 +54,6 @@ export function RestaurantForm({
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  function toggleTag(tag: string) {
-    set(
-      "foodTags",
-      form.foodTags.includes(tag)
-        ? form.foodTags.filter((t) => t !== tag)
-        : [...form.foodTags, tag],
-    );
-  }
-
   function submit(status: "draft" | "published") {
     setError(null);
     if (!form.name.trim()) {
@@ -108,18 +98,6 @@ export function RestaurantForm({
               onChange={(e) => set("name", e.target.value)}
               className={inputCls}
               placeholder="เช่น ครัวเจบ้านสวน"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-ink">
-              คำโปรย (1 บรรทัด)
-            </label>
-            <input
-              value={form.tagline}
-              onChange={(e) => set("tagline", e.target.value)}
-              className={inputCls}
-              placeholder="อาหารเจโฮมเมด วัตถุดิบสดใหม่ทุกวัน"
             />
           </div>
 
@@ -182,31 +160,6 @@ export function RestaurantForm({
               className={inputCls}
               placeholder="เล่าเรื่องร้าน จุดเด่น เมนูซิกเนเจอร์ ฯลฯ"
             />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-ink">
-              แท็กประเภทอาหาร
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {FOOD_TAGS.map((tag) => {
-                const active = form.foodTags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={
-                      active
-                        ? "rounded-full border border-brand-600 bg-brand-600 px-3 py-1.5 text-sm text-white"
-                        : "rounded-full border border-brand-200 px-3 py-1.5 text-sm text-muted hover:border-brand-400"
-                    }
-                  >
-                    {tag}
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 pt-1">
