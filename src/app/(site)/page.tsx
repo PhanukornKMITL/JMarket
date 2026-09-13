@@ -13,11 +13,12 @@ import { SITE_TAGLINE } from "@/lib/constants";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featured, all, recommended] = await Promise.all([
-    getFeaturedRestaurants(6),
-    getPublishedRestaurants(),
-    getRecommendedMenuItems(),
-  ]);
+  // รันเรียงกันทีละ query (ไม่ใช้ Promise.all) — connection ไปหา Supabase
+  // ผ่าน pgbouncer แบบ max: 1 ต่อ instance การยิงพร้อมกันหลาย query อาจไป
+  // แย่ง connection เดียวกันจนค้าง
+  const featured = await getFeaturedRestaurants(6);
+  const all = await getPublishedRestaurants();
+  const recommended = await getRecommendedMenuItems();
 
   const featuredList = featured.length > 0 ? featured : all.slice(0, 6);
   const menuStrip = recommended.slice(0, 8);
