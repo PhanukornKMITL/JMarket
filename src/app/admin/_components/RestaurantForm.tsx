@@ -60,7 +60,7 @@ export function RestaurantForm({
     );
   }
 
-  function submit() {
+  function submit(status: "draft" | "published") {
     setError(null);
     if (!form.name.trim()) {
       setError("กรอกชื่อร้าน");
@@ -72,6 +72,7 @@ export function RestaurantForm({
     }
     const payload: RestaurantInput = {
       ...form,
+      status,
       phones: form.phones.map((p) => p.trim()).filter(Boolean),
     };
     startTransition(async () => {
@@ -206,19 +207,6 @@ export function RestaurantForm({
           </div>
 
           <div className="flex flex-wrap items-center gap-4 pt-1">
-            <label className="flex items-center gap-2 text-sm text-ink">
-              <span>สถานะ:</span>
-              <select
-                value={form.status}
-                onChange={(e) =>
-                  set("status", e.target.value as RestaurantInput["status"])
-                }
-                className="rounded-lg border border-brand-200 bg-surface px-3 py-1.5 text-sm"
-              >
-                <option value="draft">ร่าง (ยังไม่แสดงบนเว็บ)</option>
-                <option value="published">เผยแพร่</option>
-              </select>
-            </label>
             <label className="flex items-center gap-2 text-sm text-ink">
               <input
                 type="checkbox"
@@ -362,11 +350,19 @@ export function RestaurantForm({
       <div className="sticky bottom-4 flex items-center gap-3 rounded-full border border-brand-100 bg-surface/95 p-2 shadow-lg backdrop-blur">
         <button
           type="button"
-          onClick={submit}
+          onClick={() => submit("published")}
           disabled={pending}
           className="rounded-full bg-brand-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
         >
-          {pending ? "กำลังบันทึก…" : "บันทึก"}
+          {pending ? "กำลังบันทึก…" : "บันทึกและเผยแพร่"}
+        </button>
+        <button
+          type="button"
+          onClick={() => submit("draft")}
+          disabled={pending}
+          className="rounded-full border border-brand-200 px-6 py-2.5 text-sm font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60"
+        >
+          {pending ? "กำลังบันทึก…" : "บันทึกแบบร่าง"}
         </button>
         <Link
           href="/admin"
